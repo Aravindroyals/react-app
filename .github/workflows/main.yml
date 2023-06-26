@@ -51,7 +51,29 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text": "Build succeeded!"}' $SLACK_WEBHOOK
+          commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
+          branch=$(echo ${{ github.ref }} | sed -e "s/refs\/heads\///")
+          payload='{
+            "text": "Build succeeded!",
+            "attachments": [
+              {
+                "color": "#00ff00",
+                "fields": [
+                  {
+                    "title": "Commit",
+                    "value": "'"$commit_message"'",
+                    "short": false
+                  },
+                  {
+                    "title": "Branch",
+                    "value": "'"$branch"'",
+                    "short": true
+                  }
+                ]
+              }
+            ]
+          }'
+          curl -X POST -H 'Content-type: application/json' --data "$payload" $SLACK_WEBHOOK
 
       - name: Notify Slack on failure
         if: failure()
