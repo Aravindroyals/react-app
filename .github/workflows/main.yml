@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  PROJECT_ID: your-project-id
+  PROJECT_ID: notional-device-387315
   SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
   IMAGE_NAME: my-app
   REGION: us-central1
