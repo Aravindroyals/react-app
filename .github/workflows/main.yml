@@ -46,7 +46,7 @@ jobs:
             --region ${{ env.REGION }} \
             --allow-unauthenticated \
             --set-env-vars=KEY1=VALUE1,KEY2=VALUE2
-      Display the Cloud Run url 
+      # Display the Cloud Run url 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
 
