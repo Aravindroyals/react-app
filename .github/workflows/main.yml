@@ -45,6 +45,35 @@ jobs:
             --region ${{ env.REGION }} \
             --allow-unauthenticated \
             --set-env-vars=KEY1=VALUE1,KEY2=VALUE2
+        # Notify Slack on deployment failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
+          branch=$(echo ${{ github.ref }} | sed -e "s/refs\/heads\///")
+          payload='{
+            "text": "Build failed!",
+            "attachments": [
+              {
+                "color": "#ff0000",
+                "fields": [
+                  {
+                    "title": "Commit",
+                    "value": "'"$commit_message"'",
+                    "short": false
+                  },
+                  {
+                    "title": "Branch",
+                    "value": "'"$branch"'",
+                    "short": true
+                  }
+                ]
+              }
+            ]
+          }'
+          curl -X POST -H 'Content-type: application/json' --data "$payload" $SLACK_WEBHOOK
+
       # Display the Cloud Run URL
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
@@ -61,4 +90,5 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text": "Build failed!"}' $SLACK_WEBHOOK
+          commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
+          branch=$(echo ${{ github.ref }} | sed -
