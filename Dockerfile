@@ -1,5 +1,5 @@
 # Use an official Node.js runtime as the base image
-# FROM node:14-alpine
+FROM node:14-alpine
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Build the React app
-# RUN npm run build
+RUN npm run build
 
 # Set the command to start the React app
 CMD ["npm", "run", "start"]
