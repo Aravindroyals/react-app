@@ -45,3 +45,14 @@ jobs:
             --region ${{ env.REGION }} \
             --allow-unauthenticated \
             --set-env-vars=KEY1=VALUE1,KEY2=VALUE2
+      - name: Notify Slack on workflow status
+        if: always() # Notify regardless of workflow status
+        uses: rtCamp/action-slack-notify@v3
+        with:
+          status: ${{ job.status }}
+          message: |
+            Workflow *${{ github.workflow }}* has *${{ job.status }}* on branch *${{ github.ref }}*.
+            Repository: ${{ github.repository }}
+            Commit: ${{ github.sha }}
+            Action URL: ${{ github.event.workflow_run.url }}
+          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
