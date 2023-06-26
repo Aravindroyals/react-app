@@ -53,6 +53,7 @@ jobs:
         run: |
           commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
           branch=$(echo ${{ github.ref }} | sed -e "s/refs\/heads\///")
+          repo_url=$(git config --get remote.origin.url)
           payload='{
             "text": "Build succeeded!",
             "attachments": [
@@ -68,6 +69,11 @@ jobs:
                     "title": "Branch",
                     "value": "'"$branch"'",
                     "short": true
+                  },
+                  {
+                    "title": "Repository",
+                    "value": "'"$repo_url"'",
+                    "short": false
                   }
                 ]
               }
@@ -82,6 +88,7 @@ jobs:
         run: |
           commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
           branch=$(echo ${{ github.ref }} | sed -e "s/refs\/heads\///")
+          repo_url=$(git config --get remote.origin.url)
           payload='{
             "text": "Build failed!",
             "attachments": [
@@ -97,6 +104,11 @@ jobs:
                     "title": "Branch",
                     "value": "'"$branch"'",
                     "short": true
+                  },
+                  {
+                    "title": "Repository",
+                    "value": "'"$repo_url"'",
+                    "short": false
                   }
                 ]
               }
