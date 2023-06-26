@@ -55,7 +55,7 @@ jobs:
         with:
           status: success
           message: "Build succeeded!"
-          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          slack_webhook_url: https://hooks.slack.com/services/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
 
       - name: Notify Slack on failure
         if: failure()
@@ -63,4 +63,4 @@ jobs:
         with:
           status: failure
           message: "Build failed!"
-          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          slack_webhook_url: https://hooks.slack.com/services/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
