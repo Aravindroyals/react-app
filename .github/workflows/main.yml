@@ -47,7 +47,7 @@ jobs:
             --set-env-vars=KEY1=VALUE1,KEY2=VALUE2
       - name: Notify Slack on workflow status
         if: always() # Notify regardless of workflow status
-        uses: rtCamp/action-slack-notify@v3
+        uses: rtCamp/action-slack-notify@v2
         with:
           status: ${{ job.status }}
           message: |
