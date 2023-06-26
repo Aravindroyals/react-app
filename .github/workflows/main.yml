@@ -46,14 +46,23 @@ jobs:
             --region ${{ env.REGION }} \
             --allow-unauthenticated \
             --set-env-vars=KEY1=VALUE1,KEY2=VALUE2
-      - name: Notify Slack on workflow status
-        if: always() # Notify regardless of workflow status
-        uses: rtCamp/action-slack-notify@v2
+      Display the Cloud Run url 
+      - name: Show Output
+        run: echo ${{ steps.deploy.outputs.url }}
+
+      - name: Notify Slack on success
+        if: success()
+        uses: slack/webhook-action@0.5.0
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
-          status: ${{ job.status }}
-          message: |
-            Workflow *${{ github.workflow }}* has *${{ job.status }}* on branch *${{ github.ref }}*.
-            Repository: ${{ github.repository }}
-            Commit: ${{ github.sha }}
-            Action URL: ${{ github.event.workflow_run.url }}
-          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          payload: '{"text": "Build succeeded!"}'
+
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slack/webhook-action@0.5.0
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          payload: '{"text": "Build failed!"}'  
+
