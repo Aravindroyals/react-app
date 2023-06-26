@@ -1,4 +1,3 @@
-#test 
 name: Deploy to Cloud Run
 
 on:
@@ -46,23 +45,22 @@ jobs:
             --region ${{ env.REGION }} \
             --allow-unauthenticated \
             --set-env-vars=KEY1=VALUE1,KEY2=VALUE2
-      # Display the Cloud Run url 
+      # Display the Cloud Run URL 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
 
       - name: Notify Slack on success
         if: success()
-        uses: slack/webhook-action@0.5.0
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        uses: rtCamp/action-slack-notify@v2
         with:
-          payload: '{"text": "Build succeeded!"}'
+          status: success
+          message: "Build succeeded!"
+          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify Slack on failure
         if: failure()
-        uses: slack/webhook-action@0.5.0
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        uses: rtCamp/action-slack-notify@v2
         with:
-          payload: '{"text": "Build failed!"}'  
-
+          status: failure
+          message: "Build failed!"
+          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
