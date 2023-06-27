@@ -82,36 +82,36 @@ jobs:
           curl -X POST -H 'Content-type: application/json' --data "$payload" $SLACK_WEBHOOK
 
       - name: Notify Slack on failure
-        if: failure()
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
-          branch=$(echo ${{ github.ref }} | sed -e "s/refs\/heads\///")
-          repo_url=$(git config --get remote.origin.url)
-          payload='{
-            "text": "Build failed!",
-            "attachments": [
-              {
-                "color": "#ff0000",
-                "fields": [
-                  {
-                    "title": "Commit",
-                    "value": "'"$commit_message"'",
-                    "short": false
-                  },
-                  {
-                    "title": "Branch",
-                    "value": "'"$branch"'",
-                    "short": true
-                  },
-                  {
-                    "title": "Repository",
-                    "value": "'"$repo_url"'",
-                    "short": false
-                  }
-                ]
-              }
-            ]
-          }'
-          curl -X POST -H 'Content-type: application/json' --data "$payload" $SLACK_WEBHOOK
+  if: failure()
+  env:
+    SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+  run: |
+    commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
+    branch=$(echo ${{ github.ref }} | sed -e "s/refs\/heads\///")
+    repo_url=$(git config --get remote.origin.url)
+    payload='{
+      "text": "*Build failed!*",
+      "attachments": [
+        {
+          "color": "#ff0000",
+          "fields": [
+            {
+              "title": "Commit",
+              "value": "'"$commit_message"'",
+              "short": false
+            },
+            {
+              "title": "Branch",
+              "value": "'"$branch"'",
+              "short": true
+            },
+            {
+              "title": "Repository",
+              "value": "'"$repo_url"'",
+              "short": false
+            }
+          ]
+        }
+      ]
+    }'
+    curl -X POST -H 'Content-type: application/json' --data "$payload" $SLACK_WEBHOOK
