@@ -65,6 +65,18 @@ jobs:
                   }
                 ]
               }
+            ],
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Build succeeded!*",
+                  "verbatim": true,
+                  "emoji": true
+                },
+                "color": "good"
+              }
             ]
           }'
           curl -X POST -H 'Content-type: application/json' --data "$payload" $SLACK_WEBHOOK
@@ -81,7 +93,7 @@ jobs:
             "text": "*Build failed!*",
             "attachments": [
               {
-                "color": "#ff0000",
+                "color": "danger",
                 "fields": [
                   {
                     "title": "Commit",
@@ -99,6 +111,18 @@ jobs:
                     "short": false
                   }
                 ]
+              }
+            ],
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Build failed!*",
+                  "verbatim": true,
+                  "emoji": true
+                },
+                "color": "danger"
               }
             ]
           }'
