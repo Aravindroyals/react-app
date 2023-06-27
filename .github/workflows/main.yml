@@ -80,8 +80,7 @@ jobs:
             ]
           }'
           curl -X POST -H 'Content-type: application/json' --data "$payload" $SLACK_WEBHOOK
-
-      - name: Notify Slack on failure
+       - name: Notify Slack on failure
   if: failure()
   env:
     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -115,3 +114,6 @@ jobs:
       ]
     }'
     curl -X POST -H 'Content-type: application/json' --data "$payload" $SLACK_WEBHOOK
+       
+
+     
