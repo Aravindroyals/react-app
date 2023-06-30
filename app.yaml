@@ -1,2 +1,8 @@
 runtime: python39
-entrypoint: gunicorn -b :$PORT main:app
+service: my-app
+
+
+env_variables:
+  GOOGLE_CLOUD_PROFILER_ENABLED: 'true'
+  GOOGLE_CLOUD_PROFILER_LOGGING: 'stdout'
+
