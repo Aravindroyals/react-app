@@ -1,0 +1,123 @@
+name: Deploy to  appengine 
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: notional-device-387315
+  SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
+  IMAGE_NAME: my-app
+  REGION: us-central1
+  SERVICE_NAME: my-app-service
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Google Cloud credentials
+        uses: google-github-actions/setup-gcloud@v0.3.0
+        with:
+          service_account_key: ${{ env.SERVICE_ACCOUNT_KEY }}
+
+      - name: Configure Docker to use the gcloud command-line tool as a credential helper
+        run: |
+          gcloud --quiet auth configure-docker
+
+      - name: Set Google Cloud project ID
+        run: gcloud config set project ${{ env.PROJECT_ID }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Deploy to App Engine
+        run: gcloud app deploy --quiet --version=main
+
+      - name: Notify Slack on success
+        if: success()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          repo_url=$(git config --get remote.origin.url)
+          payload='{
+            "text": "*Build succeeded!*",
+            "attachments": [
+              {
+                "color": "good",
+                "fields": [
+                  {
+                    "title": "Repository",
+                    "value": "'"$repo_url"'",
+                    "short": false
+                  }
+                ]
+              }
+            ],
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Build succeeded!*",
+                  "verbatim": true,
+                  "emoji": true
+                },
+                "color": "good"
+              }
+            ]
+          }'
+          curl -X POST -H 'Content-type: application/json' --data "$payload" $SLACK_WEBHOOK
+
+      - name: Notify Slack on failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
+          branch=$(echo ${{ github.ref }} | sed -e "s/refs\/heads\///")
+          repo_url=$(git config --get remote.origin.url)
+          payload='{
+            "text": "*Build failed!*",
+            "attachments": [
+              {
+                "color": "danger",
+                "fields": [
+                  {
+                    "title": "Commit",
+                    "value": "'"$commit_message"'",
+                    "short": false
+                  },
+                  {
+                    "title": "Branch",
+                    "value": "'"$branch"'",
+                    "short": true
+                  },
+                  {
+                    "title": "Repository",
+                    "value": "'"$repo_url"'",
+                    "short": false
+                  }
+                ]
+              }
+            ],
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Build failed!*",
+                  "verbatim": true,
+                  "emoji": true
+                },
+                "color": "danger"
+              }
+            ]
+          }'
+          curl -X POST -H 'Content-type: application/json' --data "$payload" $SLACK_WEBHOOK
