@@ -1,8 +1,0 @@
-runtime: python39
-service: my-app
-
-
-env_variables:
-  GOOGLE_CLOUD_PROFILER_ENABLED: 'true'
-  GOOGLE_CLOUD_PROFILER_LOGGING: 'stdout'
-
