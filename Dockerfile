@@ -1,20 +1,20 @@
-# Use an official Node.js runtime as the base image
-FROM node:14-alpine
+# Use the official Node.js 14 image as the base image
+FROM node:14
 
 # Set the working directory inside the container
-WORKDIR /app
+WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+# Copy the package.json and package-lock.json files to the container
+COPY src/package*.json ./
 
-# Install app dependencies
+# Install application dependencies
 RUN npm install
 
-# Copy the entire project to the working directory
-COPY . .
+# Copy the rest of the application code to the container
+COPY src/ ./
 
-# Build the React app
-RUN npm run build
+# Expose the port on which your application is listening
+EXPOSE 8080
 
-# Set the command to start the React app
-CMD ["npm", "run", "start"]
+# Command to run your application
+CMD ["npm", "start"]
