@@ -1,26 +1,14 @@
 {
-  "name": "simple-reactjs-app",
-  "version": "0.1.0",
-  "private": true,
-  "homepage": "https://aditya-sridhar.github.io/simple-reactjs-app",
+  "name": "my-node-app",
+  "version": "1.0.0",
+  "description": "A simple Node.js web application for Cloud Run",
+  "main": "index.js",
   "dependencies": {
-    "axios": "^0.18.0",
-    "react": "^16.4.1",
-    "react-bootstrap": "^0.32.1",
-    "react-dom": "^16.4.1",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.4"
-
+    "express": "^4.17.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "start": "node index.js"
   },
-  "devDependencies": {
-    "gh-pages": "^1.2.0"
-  }
+  "author": "Your Name",
+  "license": "MIT"
 }
