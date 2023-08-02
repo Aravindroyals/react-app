@@ -7,13 +7,13 @@ on:
 
 env:
   PROJECT_ID: notional-device-387315
-  GAR_LOCATION: gcp-reference-reactapp
+  GAR_LOCATION: gcp-nodejs
   SERVICE: test-nodejs-app
-  REGION: us-central1 
+  REGION: us-east4 
 
 jobs:
   deploy:
-    # Add 'id-token' with the intended permissions for workload identity federation
+   
     permissions:
       contents: 'read'
       id-token: 'write'
