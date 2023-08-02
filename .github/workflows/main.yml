@@ -7,8 +7,8 @@ on:
 
 env:
   PROJECT_ID: notional-device-387315
-  GAR_LOCATION:  gcp-reference-reactapp
-  SERVICE: test-Nodejs-app
+  GAR_LOCATION: gcp-reference-reactapp
+  SERVICE: test-nodejs-app
   REGION: us-east4
 
 jobs:
